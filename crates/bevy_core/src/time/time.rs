@@ -5,10 +5,12 @@ use std::time::{Duration, Instant};
 pub struct Time {
     pub delta: Duration,
     pub instant: Option<Instant>,
+    pub startup: Instant,
     pub delta_seconds_f64: f64,
     pub delta_seconds: f32,
+    pub frame_count: u32,
+    pub frame_count_u64: u64,
     pub seconds_since_startup: f64,
-    pub startup: Instant,
 }
 
 impl Default for Time {
@@ -18,14 +20,19 @@ impl Default for Time {
             instant: None,
             startup: Instant::now(),
             delta_seconds_f64: 0.0,
-            seconds_since_startup: 0.0,
             delta_seconds: 0.0,
+            frame_count: 0,
+            frame_count_u64: 0,
+            seconds_since_startup: 0.0,
         }
     }
 }
 
 impl Time {
     pub fn update(&mut self) {
+        self.frame_count_u64 += 1;
+        self.frame_count = self.frame_count_u64 as u32;
+
         let now = Instant::now();
         if let Some(instant) = self.instant {
             self.delta = now - instant;
